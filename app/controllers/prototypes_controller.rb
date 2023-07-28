@@ -1,5 +1,5 @@
 class PrototypesController < ApplicationController
-  before_action :redirect_to_index, except: [:index, :show]
+  before_action :redirect_to_sign_in, except: [:index, :show]
 
   def index
     @prototypes = Prototype.includes(:user)
@@ -10,8 +10,8 @@ class PrototypesController < ApplicationController
   end
 
   def create
-    prototype = Prototype.new(prototype_params)
-    if prototype.save
+    @prototype = Prototype.new(prototype_params)
+    if @prototype.save
       redirect_to root_path
     else
       render :new, status: :unprocessable_entity
@@ -32,8 +32,8 @@ class PrototypesController < ApplicationController
   end
 
   def update
-    prototype = Prototype.find(params[:id])
-    if prototype.update(prototype_params)
+    @prototype = Prototype.find(params[:id])
+    if @prototype.update(prototype_params)
       redirect_to action: :show
     else
       render :edit, status: :unprocessable_entity
@@ -51,9 +51,9 @@ class PrototypesController < ApplicationController
     params.require(:prototype).permit(:title, :catch_copy, :concept, :image).merge(user_id: current_user.id)
   end
 
-  def redirect_to_index
+  def redirect_to_sign_in
     unless user_signed_in?
-      redirect_to root_path
+      redirect_to new_user_session_path
     end
   end
 
